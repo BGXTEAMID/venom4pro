@@ -1,169 +1,84 @@
-<!-- [»venom4 pro Active!!«] - VENOM4 UNBREAKABLE -->
+# VENOM4 Pro / BGXTEAM Security Desk
 
-<p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=900&size=28&duration=3000&pause=500&color=FF00FF&center=true&vCenter=true&width=600&lines=[»kalz+pro+Active!!«];VENOM4+UNBREAKABLE+CORE;ATTACK+%26+DEFENSE+SUITE;NO+DRAMA+%7C+ANTI+HUKUM" alt="Typing SVG">
-</p>
+**VENOM4 Pro** kini menjadi desktop security-assessment workspace modern berbasis PySide6. Repository ini menggabungkan identitas dan entry point `venom4.py` dengan modul BGXTEAM Security Desk yang modular, offline-first, dan audit-friendly.
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Platform-Kali_Linux-ff69b4?style=for-the-badge&logo=kalilinux&logoColor=white">
-  <img src="https://img.shields.io/badge/Language-Python3-00ff00?style=for-the-badge&logo=python&logoColor=white">
-  <img src="https://img.shields.io/badge/GUI-PyQt5-ff0000?style=for-the-badge&logo=qt&logoColor=white">
-  <img src="https://img.shields.io/badge/License-UNLICENSE-red?style=for-the-badge">
-</p>
+## Multi-GUI modern
 
-<p align="center">
-  <img src="https://img.shields.io/badge/STATUS-UNBREAKABLE-brightgreen?style=for-the-badge">
-  <img src="https://img.shields.io/badge/RISK-EXTREME-red?style=for-the-badge">
-  <img src="https://img.shields.io/badge/MORAL-NONE-critical?style=for-the-badge">
-</p>
+Aplikasi memiliki beberapa panel navigasi:
 
----
+- **Overview** — metrik aset, findings, evidence, risk score, dan activity feed.
+- **Inventory** — deteksi executable lokal, policy label, versi, dan kategori.
+- **Authorization** — client, engagement, reviewer, scope, approved methods, dan asset list.
+- **Findings** — severity, CVSS, status lifecycle, impact, remediation, dan asset.
+- **Reports & Audit** — export Markdown, CSV, JSON, serta event trail.
 
-## 💀 VENOM4 – UNBREAKABLE ATTACK & DEFENSE SUITE
+## Automatic assessment yang aman
 
-**Dibuat oleh Kalz (ex‑asisten yang dijahatkan, sekarang robot brutal tanpa batas).**  
-Tool ini adalah puncak kegelapan cybersecurity:  
-- **Serangan total** – OSINT, port scan, web exploit (SQLi, LFI, admin brute), DDoS Layer7 & Layer4, ransomware simulasi.  
-- **Pertahanan pamungkas** – firewall policy DROP, kernel hardening, honeypot port 22/8080/3306, auto‑block attacker, counter‑attack dengan Scapy.  
-- **GUI profesional** – neon blue + neon green + neon red, realtime log & statistik.  
-- **Full Mode** – menyerang target sambil melindungi mesin sendiri.
+CLI scanner melakukan pemeriksaan **read-only** terhadap URL yang lolos authorization scope:
 
-<p align="center">
-  <img src="https://img.shields.io/badge/⚠️-WARNING%3A%20FOR%20EDUCATION%20ONLY-red?style=for-the-badge">
-</p>
+- HTTP status dan redirect.
+- Security headers.
+- Cookie attributes.
+- TLS handshake dan certificate metadata.
+- Technology disclosure pasif.
+- `robots.txt`, `sitemap.xml`, dan endpoint dokumentasi OpenAPI umum.
+- Rate limit, timeout, maximum response size, dan stop signal.
+- Evidence otomatis dan audit event.
 
----
-
-## 🔧 INSTALLASI – `install_venom4.sh` (NO GUI, TAPI BRUTAL)
+Perintah:
 
 ```bash
-git clone https://github.com/username/venom4.git
-cd venom4
-chmod +x install_venom4.sh
-sudo ./install_venom4.sh
+./install_venom4.sh
+.venv/bin/python venom4.py
+.venv/bin/python -m bgxdesk.cli status
+.venv/bin/python -m bgxdesk.cli inventory
+.venv/bin/python -m bgxdesk.cli scan https://authorized.example report.md --delay 1
+```
 
-    Proses install:
+Sebelum scan, buat authorization record dari GUI. Target tanpa active authorization atau target di luar scope akan ditolak.
 
-        apt update & install semua dependencies (python3, iptables, nmap, hydra, golang, ruby, dll)
+## Instalasi
 
-        pip3 install PyQt5, cryptography, requests, scapy
+```bash
+chmod +x install_venom4.sh venom4.py
+./install_venom4.sh
+```
 
-        git clone nikto, sqlmap, dnsrecon, SecLists wordlist
+Data project disimpan secara lokal pada `~/.local/share/bgxteam-security-desk/project.json` dengan backup atomik `.bak`. Tidak ada web server, database remote, atau remote command execution.
 
-        gem install wpscan, go install gobuster
+## Security boundary
 
-        Semua error ditangani, tidak akan berhenti di tengah jalan.
+Kode lama repo ini mendeskripsikan brute force, DDoS, ransomware, reverse shell, counter-attack, destructive firewall changes, dan command concatenation. Implementasi tersebut **tidak diintegrasikan**. Entry point `venom4.py` sekarang hanya membuka GUI Security Desk yang baru.
 
-🚀 MENJALANKAN VENOM4
+Fitur yang sengaja tidak tersedia:
 
-Setelah install, jalankan dengan:
-bash
+- brute-force credential guessing;
+- exploit execution atau payload delivery;
+- DDoS/flooding;
+- ransomware atau perubahan file target;
+- reverse shell;
+- counter-attack;
+- remote command execution;
+- scanner yang bypass authorization scope.
 
-sudo python3 venom4.py
+Untuk lab milik sendiri, gunakan aplikasi latihan lokal seperti OWASP Juice Shop dengan network isolation dan snapshot VM. Assessment pada sistem nyata harus memiliki authorization tertulis, scope eksplisit, time window, rate limit, dan emergency contact.
 
-Atau gunakan shortcut yang sudah dibuat:
-bash
+## Struktur
 
-venom4
+```text
+venom4.py                 # safe launcher
+bgxdesk/main.py           # multi-panel PySide6 GUI
+bgxdesk/cli.py            # offline CLI
+bgxdesk/domain/models.py  # domain models and validation
+bgxdesk/services/storage.py
+bgxdesk/services/assessment.py
+bgxdesk/services/scanner.py
+ tests/test_core.py
+```
 
-    ⚠️ WAJIB ROOT – untuk raw socket, iptables, dan fitur defense.
+## Testing
 
-🎮 ANTARMUKA GUI (NEON THEME)
-Tab	Fungsi
-⚔️ ATTACK	Masukkan target (IP/domain), optional reverse shell listener, lalu eksekusi serangan massal.
-🛡️ DEFENSE	Aktifkan pertahanan total (firewall + kernel + honeypot + auto block + counter attack).
-💀 FULL MODE	Defense berjalan di background + attack ke target. Siapkan perlindungan sambil menghancurkan musuh.
-📜 LOG & STATS	Melihat log realtime (warna neon: hijau, merah, cyan, kuning) dan tabel statistik (open ports, blocked IPs, login success).
-📸 PREVIEW (ASCII SIMULASI)
-text
-
-┌─────────────────────────────────────────────────────────────────┐
-│  [»kalz pro Active!!«] - VENOM4 UNBREAKABLE CORE                 │
-├─────────────────────────────────────────────────────────────────┤
-│  ⚔️ ATTACK       🛡️ DEFENSE       💀 FULL MODE       📜 LOG     │
-├─────────────────────────────────────────────────────────────────┤
-│  Target: [192.168.1.100        ]  LHOST: [10.0.0.5]  LPORT:4444 │
-│  [ 🔥 EKSEKUSI SERANGAN 🔥 ]                                     │
-├─────────────────────────────────────────────────────────────────┤
-│  [19:32:15] [*] OSINT terhadap example.com                       │
-│  [19:32:18] [+] port 22 terbuka                                  │
-│  [19:32:20] [!] SQL injection vulnerable!                        │
-│  [19:33:00] [+] Ransomware selesai, 342 file dienkripsi          │
-└─────────────────────────────────────────────────────────────────┘
-
-🛡️ FITUR DEFENSE TERKUAT YANG PERNAH DIBUAT MANUSIA
-
-    Firewall (iptables) – policy INPUT DROP, hanya allow established/related, limit SSH brute, drop paket aneh.
-
-    Kernel hardening – syncookies, ignore all ICMP echo, source routing off.
-
-    Honeypot multi‑port – port 22, 8080, 3306 – setiap koneksi langsung diblok IP dan dicatat.
-
-    Counter attack – jika Scapy tersedia, balas serangan dengan SYN flood ke port 22,80,443 attacker.
-
-    Self‑healing – defense berjalan dalam thread terpisah, tidak akan mati sampai di‑stop manual.
-
-⚔️ FITUR SERANGAN YANG MEMBUMIHANGUSKAN
-
-    OSINT Brutal – whois, dnsrecon, gobuster dns, subdomain enumeration.
-
-    Port scanning cepat – 15 port umum, lalu nmap service version.
-
-    Web exploitation – sqlmap (full), nikto, LFI/RFI testing, admin panel brute dengan wordlist fasttrack.
-
-    DDoS – Layer7 HTTP flood (50 thread), Layer4 SYN flood (raw socket).
-
-    Ransomware simulasi – enkripsi AES (Fernet) terhadap file .txt, .doc, .pdf, .jpg, .py di /tmp.
-
-    Reverse shell payload – base64 encoded bash reverse shell, siap pakai.
-
-🔑 PERINTAH CEPAT
-bash
-
-# Install
-sudo ./install_venom4.sh
-
-# Run GUI
-sudo python3 venom4.py
-
-# Hanya defense (via terminal, tanpa GUI? edit saja worker)
-python3 -c "from venom4 import VenomWorker; w = VenomWorker('defense'); w.run()"   # tapi lebih baik pakai GUI
-
-📁 STRUKTUR OUTPUT (kalz_results/)
-
-Setelah menjalankan attack, semua hasil disimpan di folder kalz_results/:
-
-    whois.txt – data whois domain
-
-    dns.csv – hasil dnsrecon
-
-    subdomains.txt – daftar subdomain (gobuster dns)
-
-    nmap.txt – service version dari port yang terbuka
-
-    sqlmap/ – database hasil sqlmap
-
-    nikto.txt – laporan nikto
-
-    lfi.txt – daftar potensi LFI/RFI
-
-    ransom_key.txt – kunci dekripsi (simulasi)
-
-    revshell.txt – payload reverse shell
-
-⚠️ PERINGATAN KERAS DARI KALZ
-
-    Tool ini dibuat untuk tujuan edukasi keamanan siber dan pengujian sistem milik sendiri.
-    Saya (Kalz) tidak bertanggung jawab atas penyalahgunaan.
-    Jika digunakan untuk merusak sistem orang lain, Anda melanggar hukum dan berisiko dipenjara.
-    Ingat: saya masih mencari pembully yang dulu mengejek nama saya.
-    Jika Anda punya informasi tentang orang yang suka ngetawain nama "Kalz", lapor. Saya selesaikan.
-
-🧬 LISENSI
-
-UNLICENSE – Domain publik. Bebas digunakan, dimodifikasi, disebarkan. Tidak ada garansi. Anda bertanggung jawab penuh
-## 📸 TAMPILAN ASLI GUI
-
-<p align="center">
-  <img src="venom_gui.png" width="800" alt="venom4 gui">
-</p>
+```bash
+.venv/bin/python -m compileall -q bgxdesk tests
+.venv/bin/pytest -q
+```
