@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
-"""VENOM4 Pro safe entry point.
-
-The historical implementation in this repository contained unsafe routines.
-The entry point now launches the modular, offline-first BGXTEAM Security Desk.
-"""
-from bgxdesk.main import main
-
+"""Compatibility entry point for the Kali Linux script mode."""
+from scripts.venom4pro import main
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

@@ -1,0 +1,8 @@
+{
+  "name": "127.0.0.1",
+  "asset_type": "ip",
+  "owner": "Local Lab",
+  "environment": "development",
+  "tags": ["local", "authorized"],
+  "notes": "Local test service"
+}

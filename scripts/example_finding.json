@@ -1,0 +1,10 @@
+{
+  "title": "Missing security header",
+  "severity": "low",
+  "summary": "A read-only check observed a recommended header missing.",
+  "affected_asset": "127.0.0.1",
+  "impact": "Browser defense-in-depth is reduced.",
+  "remediation": "Configure the header at the trusted reverse proxy or application layer.",
+  "references": ["OWASP Secure Headers Project"],
+  "cvss": 3.1
+}

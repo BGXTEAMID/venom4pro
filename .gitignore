@@ -6,4 +6,8 @@ __pycache__/
 *.bak
 *.log
 *.sqlite3
+*.db
+*.db-shm
+*.db-wal
+reports/
 .DS_Store
