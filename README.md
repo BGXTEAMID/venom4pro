@@ -12,6 +12,20 @@ Aplikasi memiliki beberapa panel navigasi:
 - **Findings** — severity, CVSS, status lifecycle, impact, remediation, dan asset.
 - **Reports & Audit** — export Markdown, CSV, JSON, serta event trail.
 
+### Visual identity
+
+GUI menggunakan wallpaper 3D bertema **Venom / Cyber Security / Bug Hunter**:
+
+```text
+assets/wallpapers/venom4pro-main.png     # desktop GUI 16:9
+assets/wallpapers/venom4pro-wide.png     # terminal/CLI 21:9
+assets/wallpapers/venom4pro-compact.png  # panel compact 4:3
+```
+
+Wallpaper utama otomatis dimuat oleh `bgxdesk.main` sebagai background dengan
+overlay gelap agar tabel, log, dan form tetap terbaca. Varian wide dan compact
+tersedia untuk panel atau launcher tambahan.
+
 ## Automatic assessment yang aman
 
 CLI scanner melakukan pemeriksaan **read-only** terhadap URL yang lolos authorization scope:

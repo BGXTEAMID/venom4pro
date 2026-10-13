@@ -18,9 +18,13 @@ from bgxdesk.services.assessment import AuthorizationService, FindingsService, I
 from bgxdesk.services.storage import JsonStore, Repository
 
 APP_NAME = "BGXTEAM SECURITY DESK"
+ASSET_DIR = Path(__file__).resolve().parents[1] / "assets" / "wallpapers"
+WALLPAPER_MAIN = (ASSET_DIR / "venom4pro-main.png").as_posix()
 STYLE = """
 QMainWindow,QWidget{background:#090d14;color:#e7ecf5;font-family:'Segoe UI',sans-serif;font-size:13px}
-QFrame#Sidebar,QFrame#Panel{background:#111925;border:1px solid #253044;border-radius:12px}
+QWidget#AppRoot{background-color:#090d14;background-image:url("WALLPAPER_MAIN");background-position:center;background-repeat:no-repeat}
+QWidget#Content{background:rgba(9,13,20,210)}
+QFrame#Sidebar,QFrame#Panel{background:rgba(17,25,37,235);border:1px solid #253044;border-radius:12px}
 QFrame#Sidebar{border-radius:0;border-top:0;border-bottom:0;border-left:0}
 QFrame#Hero{background:#211925;border:1px solid #6b2b3c;border-radius:15px}
 QLabel#Brand{font-size:20px;font-weight:900;letter-spacing:1px}
@@ -49,7 +53,7 @@ class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle(APP_NAME); self.resize(1450, 900); self.setMinimumSize(1120, 720)
-        self.setStyleSheet(STYLE)
+        self.setStyleSheet(STYLE.replace("WALLPAPER_MAIN", WALLPAPER_MAIN))
         data_path = Path.home() / ".local" / "share" / "bgxteam-security-desk" / "project.json"
         self.repository = Repository(JsonStore(data_path))
         self.inventory = InventoryService(self.repository)
@@ -59,7 +63,7 @@ class MainWindow(QMainWindow):
         self.build_shell(); self.refresh_all()
 
     def build_shell(self) -> None:
-        root = QWidget(); self.setCentralWidget(root); outer = QHBoxLayout(root); outer.setContentsMargins(0, 0, 0, 0); outer.setSpacing(0)
+        root = QWidget(); root.setObjectName("AppRoot"); self.setCentralWidget(root); outer = QHBoxLayout(root); outer.setContentsMargins(0, 0, 0, 0); outer.setSpacing(0)
         sidebar = QFrame(); sidebar.setObjectName("Sidebar"); sidebar.setFixedWidth(245); side = QVBoxLayout(sidebar); side.setContentsMargins(16, 24, 16, 18)
         brand = QLabel("◈ BGXTEAM"); brand.setObjectName("Brand"); side.addWidget(brand)
         subtitle = QLabel("SECURITY DESK / LOCAL"); subtitle.setObjectName("Muted"); side.addWidget(subtitle); side.addSpacing(18)
@@ -69,7 +73,7 @@ class MainWindow(QMainWindow):
             self.stack.addWidget(builder())
         side.addStretch(); status = QLabel("● LOCAL MODE\nOffline JSON store\nNo remote execution"); status.setObjectName("Muted"); side.addWidget(status)
         outer.addWidget(side)
-        content = QWidget(); layout = QVBoxLayout(content); layout.setContentsMargins(25, 20, 25, 20)
+        content = QWidget(); content.setObjectName("Content"); layout = QVBoxLayout(content); layout.setContentsMargins(25, 20, 25, 20)
         top = QHBoxLayout(); self.page_title = QLabel("Security Overview"); self.page_title.setStyleSheet("font-size:24px;font-weight:800"); top.addWidget(self.page_title); top.addStretch(); self.clock = QLabel(); self.clock.setObjectName("Muted"); top.addWidget(self.clock); layout.addLayout(top); layout.addWidget(self.stack, 1); outer.addWidget(content, 1)
         timer = QTimer(self); timer.timeout.connect(lambda: self.clock.setText(datetime.now().strftime("%a %d %b %Y  •  %H:%M:%S"))); timer.start(1000)
 
