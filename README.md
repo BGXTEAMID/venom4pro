@@ -126,3 +126,23 @@ pytest -q
 ## Catatan kualitas kode
 
 Permintaan minimal 3.000 baris **per file** tidak diterapkan sebagai duplikasi atau padding. Arsitektur dipecah berdasarkan tanggung jawab agar dapat dirawat dan diaudit. Target yang lebih sehat adalah menambah logika nyata, test, migration, dan dokumentasi secara modular—bukan membuat satu file ribuan baris yang sulit diverifikasi.
+
+## Maintenance database
+
+Database dapat di-backup, diperiksa, dan dipulihkan tanpa web service:
+
+```bash
+./.venv/bin/python scripts/venom4pro_admin.py integrity
+./.venv/bin/python scripts/venom4pro_admin.py backup ./backups/project.db
+./.venv/bin/python scripts/venom4pro_admin.py restore ./backups/project.db
+./.venv/bin/python scripts/venom4pro_admin.py export ./exports/project.json
+./.venv/bin/python scripts/venom4pro_admin.py import ./exports/project.json
+./.venv/bin/python scripts/venom4pro_admin.py report ./reports/project.md
+./.venv/bin/python scripts/venom4pro_admin.py vacuum
+```
+
+`restore` membuat backup database aktif terlebih dahulu secara default. Gunakan `--no-before-backup` hanya jika Anda memang sudah memiliki salinan aman.
+
+## Ukuran implementasi
+
+Codebase diperluas dengan policy engine, data redaction, SQLite maintenance, deterministic reporting, integrity checks, backup/restore, import/export, admin CLI, dan test coverage. Ukuran diutamakan sebagai logika bermakna yang terpisah menurut tanggung jawab—bukan 3.000 baris duplikasi di setiap file.
