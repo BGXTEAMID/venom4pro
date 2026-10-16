@@ -18,7 +18,12 @@ from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import urljoin, urlparse
 from urllib.request import Request, urlopen
-
+from bgxdesk.services.health import HealthService
+from bgxdesk.services.migrations import MigrationManager
+from bgxdesk.services.policy import OperationPolicy, ScopePolicy
+from bgxdesk.services.project_ops import ProjectMaintenance
+from bgxdesk.services.query import ProjectQuery
+from bgxdesk.services.reporting import ReportBuilder
 from bgxdesk.services.sqlite_store import SQLiteStore
 
 
@@ -40,16 +45,7 @@ def active_scope(store: SQLiteStore) -> dict | None:
 
 def target_in_scope(record: dict | None, target: str) -> bool:
     if not record or not record.get("active"): return False
-    parsed = urlparse(target); host = (parsed.hostname or "").lower(); candidate = target.lower().rstrip("/")
-    included = False
-    for rule in record.get("rules", []):
-        value = str(rule["value"]).strip().lower().rstrip("/")
-        if value.startswith(("http://", "https://")): matched = candidate.startswith(value)
-        elif value.startswith("*."): matched = host.endswith(value[1:])
-        else: matched = value in {host, parsed.netloc.lower()} or host.endswith("." + value)
-        if matched and not rule.get("included", True): return False
-        if matched: included = True
-    return included
+    return ScopePolicy(record.get("rules", [])).explain(target).allowed
 
 
 def normalize_target(value: str) -> str:
@@ -76,6 +72,9 @@ def request(url: str, timeout: float, delay_state: dict, delay: float, verify_tl
 
 def scan(store: SQLiteStore, args: argparse.Namespace) -> dict:
     target = normalize_target(args.target)
+    policy = OperationPolicy()
+    decision = policy.validate_scan(target, args.timeout, args.delay, args.max_body)
+    if not decision.allowed: raise PermissionError(decision.reason)
     if not target_in_scope(active_scope(store), target): raise PermissionError("target is outside active authorization scope")
     events: list[dict] = []; delay = {"last": 0.0}
     def add(check: str, status: str, severity: str = "info", summary: str = "", details: dict | None = None, url: str = target) -> None: events.append({"check": check, "status": status, "severity": severity, "summary": summary, "details": details or {}, "url": url, "created_at": utc_now()})
@@ -132,6 +131,17 @@ def build_parser() -> argparse.ArgumentParser:
     report = sub.add_parser("report", help="export a Markdown report")
     report.add_argument("output")
     sub.add_parser("audit", help="show recent audit events")
+    sub.add_parser("health", help="run local database and storage health checks")
+    sub.add_parser("metrics", help="show risk and project metrics")
+    sub.add_parser("integrity", help="verify SQLite integrity and checksum")
+    backup = sub.add_parser("backup", help="create a SQLite backup")
+    backup.add_argument("destination")
+    export = sub.add_parser("export", help="export the project to JSON")
+    export.add_argument("destination")
+    migrate = sub.add_parser("migrate", help="apply or verify local migrations")
+    migrate.add_argument("migration_command", choices=("status", "apply", "verify"))
+    search = sub.add_parser("search", help="search findings, assets, and audit events")
+    search.add_argument("query")
     return parser
 
 
@@ -147,6 +157,15 @@ def main() -> int:
         elif args.command == "transition": emit(store.transition_finding(args.finding_id, args.status))
         elif args.command == "scan": emit(scan(store, args))
         elif args.command == "audit": emit(store.audit_events())
+        elif args.command == "health": emit(HealthService(store).run())
+        elif args.command == "metrics": emit(ReportBuilder(store).metrics())
+        elif args.command == "integrity": emit(ProjectMaintenance(store).integrity_check())
+        elif args.command == "backup": emit(ProjectMaintenance(store).backup(args.destination))
+        elif args.command == "export": emit({"path": str(ProjectMaintenance(store).export_json(args.destination))})
+        elif args.command == "migrate":
+            manager = MigrationManager(store)
+            emit(manager.status() if args.migration_command == "status" else manager.apply() if args.migration_command == "apply" else manager.verify())
+        elif args.command == "search": emit(ProjectQuery(store).search_everything(args.query))
         elif args.command == "report":
             status = store.status(); findings = store.findings(); lines = ["# Venom4pro SQLite Assessment Report", "", f"Generated: {utc_now()}", "", f"- Database: `{status['database']}`", f"- Risk score: {sum(WEIGHTS.get(item['severity'], 0) for item in findings if item['status'] not in {'closed','verified'})}", "", "## Findings", ""]
             for item in findings: lines.extend([f"### {item['title']}", "", f"- Severity: **{item['severity'].upper()}**", f"- Status: `{item['status']}`", f"- Asset: `{item['affected_asset']}`", "", item["summary"], "", f"Remediation: {item['remediation'] or 'Not documented.'}", ""])

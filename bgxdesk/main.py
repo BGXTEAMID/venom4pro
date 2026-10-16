@@ -17,7 +17,7 @@ from bgxdesk.domain.models import Asset, AssetType, AuthorizationRecord, Finding
 from bgxdesk.services.assessment import AuthorizationService, FindingsService, InventoryService, ReportService
 from bgxdesk.services.storage import JsonStore, Repository
 
-APP_NAME = "BGXTEAM SECURITY DESK"
+APP_NAME = "VENOM4PRO — MULTI-GUI SECURITY DESK"
 ASSET_DIR = Path(__file__).resolve().parents[1] / "assets" / "wallpapers"
 WALLPAPER_MAIN = (ASSET_DIR / "venom4pro-main.png").as_posix()
 STYLE = """
@@ -65,8 +65,8 @@ class MainWindow(QMainWindow):
     def build_shell(self) -> None:
         root = QWidget(); root.setObjectName("AppRoot"); self.setCentralWidget(root); outer = QHBoxLayout(root); outer.setContentsMargins(0, 0, 0, 0); outer.setSpacing(0)
         sidebar = QFrame(); sidebar.setObjectName("Sidebar"); sidebar.setFixedWidth(245); side = QVBoxLayout(sidebar); side.setContentsMargins(16, 24, 16, 18)
-        brand = QLabel("◈ BGXTEAM"); brand.setObjectName("Brand"); side.addWidget(brand)
-        subtitle = QLabel("SECURITY DESK / LOCAL"); subtitle.setObjectName("Muted"); side.addWidget(subtitle); side.addSpacing(18)
+        brand = QLabel("◈ VENOM4PRO"); brand.setObjectName("Brand"); side.addWidget(brand)
+        subtitle = QLabel("MULTI-GUI / LOCAL / SQLITE CLI COMPANION"); subtitle.setObjectName("Muted"); side.addWidget(subtitle); side.addSpacing(18)
         self.stack = QStackedWidget(); pages = [("⌂  Overview", self.build_overview), ("▦  Inventory", self.build_inventory), ("◎  Authorization", self.build_authorization), ("⚠  Findings", self.build_findings), ("▤  Reports & Audit", self.build_reports)]
         for index, (label, builder) in enumerate(pages):
             button = QPushButton(label); button.setObjectName("Nav"); button.clicked.connect(lambda _=False, i=index: self.navigate(i)); side.addWidget(button)
