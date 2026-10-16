@@ -602,3 +602,44 @@ Katalog menggunakan pengelompokan resmi metapackage Kali sebagai referensi umum,
 Katalog mencatat tool yang memiliki fungsi ofensif agar inventory dan governance lengkap, tetapi Venom4pro hanya menyediakan command inspection dan package planning. Tidak ada command terpadu untuk brute force, credential theft, exploit delivery, payload generation, persistence, destructive action, atau remote execution.
 
 Untuk tool dengan risk `restricted`, operator harus mengikuti authorization tertulis, rules of engagement, lab/staging isolation, dan prosedur review organisasi sebelum menjalankannya secara manual.
+
+
+## 16. GUI Tool Catalog mandiri
+
+Selain multi-GUI utama, tersedia GUI khusus untuk katalog tool:
+
+```bash
+./run.sh tools-gui
+```
+
+Atau langsung:
+
+```bash
+.venv/bin/python scripts/venom4pro_tools_gui.py
+```
+
+GUI ini menggunakan wallpaper:
+
+```text
+assets/wallpapers/venom4pro-wide.png
+```
+
+Fitur GUI mandiri:
+
+- pencarian live berdasarkan nama, command, kategori, atau purpose;
+- filter 21 kategori;
+- filter risk `safe`, `review`, atau `restricted`;
+- tabel 1.518 entry;
+- detail package, command family, dan purpose;
+- safe command matrix;
+- copy command inspection ke clipboard;
+- export hasil filter ke JSON;
+- background wallpaper Venom4pro 3D;
+- tidak menjalankan executable tool dan tidak mengirim traffic.
+
+Mode ini cocok untuk browsing dan memilih tool. Gunakan CLI untuk inventory/headless automation:
+
+```bash
+.venv/bin/python scripts/venom4pro_tools.py summary
+.venv/bin/python scripts/venom4pro_tools.py check --query nmap
+```

@@ -9,4 +9,8 @@ if [[ "${1:-}" == "gui" ]]; then
   shift
   exec .venv/bin/python scripts/venom4pro_gui.py "$@"
 fi
+if [[ "${1:-}" == "tools-gui" ]]; then
+  shift
+  exec .venv/bin/python scripts/venom4pro_tools_gui.py "$@"
+fi
 exec .venv/bin/python venom4.py "$@"

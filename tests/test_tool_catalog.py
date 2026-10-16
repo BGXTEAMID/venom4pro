@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from bgxdesk.services.tool_catalog import categories, category_counts, count, find
 
 
@@ -22,3 +24,9 @@ def test_catalog_risk_filter() -> None:
     assert safe and restricted
     assert all(item.risk == "safe" for item in safe)
     assert all(item.risk == "restricted" for item in restricted)
+
+
+def test_standalone_gui_uses_provided_wallpaper() -> None:
+    source = Path("bgxdesk/tool_catalog_gui.py").read_text(encoding="utf-8")
+    assert "venom4pro-wide.png" in source
+    assert "assets" in source and "wallpapers" in source
