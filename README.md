@@ -1,133 +1,218 @@
+<div align="center">
+
 # VENOM4PRO
-## Authorized Security Desk — Kali Linux Script + Multi-GUI
 
-![Venom4pro 3D cyber security wallpaper](assets/wallpapers/venom4pro-main.png)
+### Authorized Cybersecurity Desk for Kali Linux
 
-> **Venom4pro** adalah workspace lokal untuk pekerjaan keamanan yang berwenang: mencatat authorization, mengelola scope, menyimpan asset dan finding, menjalankan pemeriksaan HTTP/HTTPS **read-only**, mengumpulkan evidence, serta membuat laporan.
+**Local-first security assessment, tool catalog, SQLite evidence, and multi-GUI operations.**
 
-Tidak ada web server, frontend browser, remote command execution, brute force, exploit execution, payload delivery, DDoS, credential guessing, atau counter-attack.
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Platform](https://img.shields.io/badge/Platform-Kali%20Linux-557C94?style=for-the-badge&logo=kalilinux&logoColor=white)](https://www.kali.org/)
+[![Repository](https://img.shields.io/badge/Repository-BGXTEAMID%2Fvenom4pro-111827?style=for-the-badge&logo=github&logoColor=white)](https://github.com/BGXTEAMID/venom4pro)
+[![Tool Catalog](https://img.shields.io/badge/Tool%20Catalog-1518%20entries-ff304b?style=for-the-badge)](scripts/venom4pro_tools.py)
+[![Mode](https://img.shields.io/badge/Mode-Local%20%7C%20Read--Only-16a34a?style=for-the-badge)](README.md)
+
+[Overview](#project-overview) · [Installation](#installation) · [CLI](#cli-commands) · [GUI](#multi-gui-desktop) · [Screenshots](#live-execution-screenshots) · [Security](#security-and-privacy)
+
+</div>
+
+<p align="center">
+  <img src="assets/wallpapers/venom4pro-main.png" alt="Venom4pro 3D cyber security wallpaper" width="100%" />
+</p>
+
+> **Venom4pro** is a local Kali Linux workspace for authorized security work. It combines a Python CLI, SQLite project database, read-only HTTP/HTTPS checks, evidence checksums, a 1,518-entry tool catalog, and PySide6 desktop interfaces.
+
+> The project is designed for systems that you own or are explicitly authorized to assess. It does not provide brute force, credential theft, exploit delivery, payload generation, persistence, destructive actions, DDoS, or remote command execution.
 
 ---
 
-## 1. Tampilan 3D arsitektur
+## Table of Contents
+
+1. [Project Overview](#project-overview)
+2. [Key Features](#key-features)
+3. [3D Architecture Diagram](#3d-architecture-diagram)
+4. [Technology Stack](#technology-stack)
+5. [Project Structure](#project-structure)
+6. [Installation](#installation)
+7. [Configuration](#configuration)
+8. [Quick Start](#quick-start)
+9. [Live Execution Screenshots](#live-execution-screenshots)
+10. [Example Terminal Output](#example-terminal-output)
+11. [GUI Preview](#gui-preview)
+12. [Usage Examples](#usage-examples)
+13. [CLI Commands](#cli-commands)
+14. [Configuration Reference](#configuration-reference)
+15. [Security and Privacy](#security-and-privacy)
+16. [Troubleshooting](#troubleshooting)
+17. [Testing and Verification](#testing-and-verification)
+18. [Roadmap](#roadmap)
+19. [Contributing](#contributing)
+20. [License](#license)
+21. [Disclaimer](#disclaimer)
+22. [Author and Contact](#author-and-contact)
+
+---
+
+## Project Overview
+
+Venom4pro is organized as three local layers:
+
+- **Script layer:** reproducible CLI commands for project data, policy checks, read-only assessment, reports, backup, migration, and inventory.
+- **Data layer:** SQLite persistence for authorization, scope rules, assets, findings, evidence, scan results, and audit events.
+- **Desktop layer:** optional PySide6 multi-GUI and a dedicated Tool Catalog GUI using the supplied Venom4pro wallpaper.
+
+The repository also contains a curated catalog of **1,518 cybersecurity tools** across 21 categories. The catalog is metadata-oriented: it records tool purpose, package family, risk policy, package name, and safe inspection commands. It does not execute catalog entries.
+
+---
+
+## Key Features
+
+### Assessment and project management
+
+- Explicit authorization records and included/excluded scope rules.
+- Asset inventory with environment and ownership metadata.
+- Finding lifecycle with validation and controlled status transitions.
+- Local audit events and append-only safety journal.
+- Evidence storage with SHA-256 checksums and finding attachment.
+- Markdown, CSV, and JSON reporting.
+
+### Read-only scanner
+
+- HTTP status and redirect observations.
+- Recommended security-header checks.
+- Cookie attribute observations.
+- Passive technology hints.
+- TLS handshake metadata.
+- Optional `robots.txt`, `sitemap.xml`, `openapi.json`, and `swagger.json` checks.
+- Timeout, delay, body-size, TLS, and scope enforcement.
+- GET/HEAD-only operation.
+
+### Tool catalog
+
+- 1,518 catalog entries.
+- 21 categories, including OSINT, DNS, web/API, vulnerability assessment, code security, cloud, containers, wireless, forensics, reverse engineering, mobile, Windows/AD, fuzzing, crypto/stego, reporting, and defensive utilities.
+- Live search and risk filtering in the standalone GUI.
+- Safe command matrix: `command -v`, `--version`, `--help`, and `apt-cache policy`.
+- Non-executing APT installation plan generation.
+
+### Desktop interfaces
+
+- Main multi-panel Security Desk GUI.
+- Dedicated Tool Catalog GUI.
+- 3D cyber security wallpapers included in `assets/wallpapers/`.
+- Headless environments receive a clear PySide6/display message and can continue with CLI mode.
+
+---
+
+## 3D Architecture Diagram
 
 ```mermaid
 flowchart LR
-    U[Operator Kali Linux]
-    CLI[CLI Script Mode]
-    GUI[Multi-GUI Desktop]
-    DB[(SQLite Local Database)]
-    JSON[(GUI Project JSON)]
-    POLICY[Policy + Scope Guard]
-    SCAN[Read-only HTTP Scanner]
-    EVIDENCE[Evidence + SHA-256]
-    REPORT[Markdown / CSV / JSON Report]
-    AUDIT[Audit + Safety Journal]
+    OP[Operator\nKali Linux]
+    CLI[Python CLI]
+    GUI[Security Desk\nMulti-GUI]
+    TOOLS[Tool Catalog GUI\n1,518 entries]
+    POLICY[Scope +\nOperation Policy]
+    SCAN[Read-only\nHTTP/HTTPS Checks]
+    DB[(SQLite\nLocal Database)]
+    EVIDENCE[Evidence\nSHA-256]
+    AUDIT[Audit Events\nSafety Journal]
+    REPORT[Markdown / CSV / JSON\nReports]
 
-    U --> CLI
-    U --> GUI
+    OP --> CLI
+    OP --> GUI
+    OP --> TOOLS
     CLI --> POLICY
-    CLI --> DB
-    GUI --> JSON
     POLICY --> SCAN
     SCAN --> DB
-    SCAN --> EVIDENCE
-    DB --> REPORT
+    CLI --> DB
+    GUI --> DB
+    TOOLS --> CLI
+    DB --> EVIDENCE
     DB --> AUDIT
-    GUI --> REPORT
+    DB --> REPORT
 ```
 
-### Cara membaca diagram
+### Data flow
 
-1. **Operator** memulai aplikasi dari terminal Kali Linux.
-2. **CLI** adalah mode utama untuk automation, SQLite, scan, backup, dan reporting.
-3. **Multi-GUI** adalah dashboard desktop untuk inventory, authorization, finding, dan laporan manual.
-4. **Policy + Scope Guard** harus lolos sebelum pemeriksaan target dijalankan.
-5. Scanner hanya menggunakan **GET/HEAD** dengan timeout, delay, body limit, dan TLS verification.
-6. Semua hasil lokal dapat diaudit melalui database, evidence checksum, audit event, dan safety journal.
-
----
-
-## 2. Fitur utama
-
-### Script mode
-
-- SQLite database lokal.
-- Authorization record dan scope rules.
-- Asset inventory.
-- Finding lifecycle: `draft → open → accepted → remediated → verified → closed`.
-- Automatic read-only HTTP/HTTPS checks.
-- Security headers.
-- Cookie attributes.
-- Passive technology hints.
-- TLS handshake metadata.
-- `robots.txt`, `sitemap.xml`, `openapi.json`, dan `swagger.json`.
-- Batch scan sequential dengan delay.
-- Backup dan restore.
-- Import/export JSON.
-- Database integrity check.
-- Migration manager.
-- Evidence dengan SHA-256 checksum.
-- Report Markdown, CSV, dan JSON.
-- Tool inventory lokal Kali.
-- Health check dan environment doctor.
-- Search, pagination, risk scoring, duplicate finding detection.
-
-### Multi-GUI desktop
-
-GUI PySide6 mempunyai panel:
-
-- **Overview** — metric asset, finding, evidence, risk score, dan activity.
-- **Tool Inventory** — deteksi tool lokal, policy status, dan versi.
-- **Authorization** — membuat engagement record dan scope.
-- **Findings** — membuat finding dengan severity, CVSS, impact, dan remediation.
-- **Reports & Audit** — export Markdown, CSV, JSON, serta melihat audit trail.
-
-Wallpaper 3D tersedia untuk layout utama, wide, dan compact:
-
-- `assets/wallpapers/venom4pro-main.png`
-- `assets/wallpapers/venom4pro-wide.png`
-- `assets/wallpapers/venom4pro-compact.png`
+1. The operator creates an authorization record.
+2. Scope policy evaluates the requested target.
+3. Only an allowed target can reach the read-only scanner.
+4. Results are persisted locally as scan records and evidence.
+5. Audit events record project actions.
+6. Reports are generated from the local database.
 
 ---
 
-## 3. Persyaratan sistem
+## Technology Stack
 
-- Kali Linux 2024+ atau Debian-based Linux.
-- Python 3.10+.
-- `python3-venv`.
-- `python3-pip`.
-- SQLite3.
-- Desktop environment jika ingin menjalankan GUI.
-- Koneksi internet hanya diperlukan untuk instalasi dependency atau target yang memang diotorisasi.
+| Layer | Technology |
+|---|---|
+| Language | Python 3.10+ |
+| Database | SQLite with WAL and integrity checks |
+| Desktop GUI | PySide6 / Qt Fusion style |
+| Persistence | SQLite for CLI, local JSON project store for existing Security Desk GUI |
+| Validation | Custom policy engine and pytest-compatible tests |
+| Reports | Markdown, CSV, JSON |
+| Visual assets | PNG wallpaper assets included in the repository |
+| Platform | Kali Linux / Debian-based Linux |
 
 ---
 
-## 4. Instalasi paling mudah
+## Project Structure
 
-Clone repository:
+```text
+venom4.py                         # root CLI entry point
+run.sh                            # CLI, main GUI, and Tool Catalog GUI launcher
+install_venom4.sh                 # Kali setup script
+requirements.txt                  # pytest and PySide6
+
+scripts/venom4pro.py              # main CLI workflow
+scripts/venom4pro_tools.py       # metadata catalog CLI
+scripts/venom4pro_tools_gui.py   # standalone Tool Catalog GUI launcher
+scripts/venom4pro_gui.py         # Security Desk GUI launcher
+scripts/venom4pro_admin.py       # backup, restore, import, export, reports
+scripts/venom4pro_batch.py       # bounded sequential read-only scans
+scripts/venom4pro_doctor.py      # local health and tool inventory
+scripts/venom4pro_migrate.py     # migration utility
+
+bgxdesk/main.py                   # main multi-panel PySide6 GUI
+bgxdesk/tool_catalog_gui.py      # standalone catalog GUI
+bgxdesk/services/sqlite_store.py # SQLite repositories
+bgxdesk/services/scanner.py      # reusable read-only scanner
+bgxdesk/services/policy.py       # scope and operation policy
+bgxdesk/services/tool_catalog.py # 1,518-entry catalog
+bgxdesk/services/evidence.py     # evidence and checksum lifecycle
+bgxdesk/services/reporting.py    # deterministic report builder
+bgxdesk/services/project_ops.py  # backup, restore, import, export
+
+assets/wallpapers/                # supplied Venom4pro 3D wallpapers
+migrations/                       # local SQL migrations
+legacy/original/                  # preserved legacy files
+tests/                            # unit and integration tests
+```
+
+---
+
+## Installation
+
+### Clone
 
 ```bash
 git clone https://github.com/BGXTEAMID/venom4pro.git
 cd venom4pro
 ```
 
-Beri permission dan install:
+### Install on Kali Linux
 
 ```bash
-chmod +x install_venom4.sh run.sh venom4.py
+chmod +x install_venom4.sh run.sh
 ./install_venom4.sh
 ```
 
-Installer akan:
+The installer creates `.venv`, installs Python dependencies, installs SQLite tooling when available through APT, prepares the default database, and marks all local launchers executable.
 
-1. memasang Python, venv, pip, dan SQLite jika tersedia melalui `apt-get`;
-2. membuat `.venv`;
-3. memasang `pytest` dan `PySide6`;
-4. menyiapkan database default;
-5. memberi permission pada launcher.
-
-Cek instalasi:
+### Verify the installation
 
 ```bash
 ./run.sh status
@@ -135,340 +220,298 @@ Cek instalasi:
 ./run.sh integrity
 ```
 
-Jika hanya ingin mode CLI dan tidak memerlukan GUI, dependency PySide6 tetap aman terpasang tetapi tidak akan dijalankan.
+For a headless machine, CLI mode is sufficient. A desktop session is required for PySide6 windows.
 
 ---
 
-## 5. Lokasi data
+## Configuration
 
-Database SQLite default:
+### Database path
+
+Default:
 
 ```text
 ~/.local/share/venom4pro/venom4pro.db
 ```
 
-Override database:
+Custom path:
 
 ```bash
 ./run.sh --db /path/to/project.db status
 ```
 
-atau:
+or:
 
 ```bash
 VENOM4PRO_DB=/path/to/project.db ./run.sh status
 ```
 
-Project JSON GUI lama/desktop disimpan di:
+### Runtime configuration
+
+Optional configuration is supported by the configuration service. Important values include:
+
+| Variable | Meaning | Default |
+|---|---|---|
+| `VENOM4PRO_DB` | SQLite path | `~/.local/share/venom4pro/venom4pro.db` |
+| `VENOM4PRO_TIMEOUT` | Default request timeout | `8` seconds |
+| `VENOM4PRO_DELAY` | Default delay between requests | `0.6` seconds |
+| `VENOM4PRO_MAX_BODY` | Maximum response body | `512000` bytes |
+| `VENOM4PRO_REPORT_DIR` | Report directory | `./reports` |
+| `VENOM4PRO_BACKUP_DIR` | Backup directory | `./backups` |
+
+### GUI project path
+
+The existing Security Desk GUI maintains its local project snapshot at:
 
 ```text
 ~/.local/share/bgxteam-security-desk/project.json
 ```
 
-File lama repository tetap dipertahankan di:
-
-```text
-legacy/original/
-```
+The CLI/SQLite database remains the authoritative store for script automation.
 
 ---
 
-## 6. Quick start CLI
-
-### 6.1 Inisialisasi
+## Quick Start
 
 ```bash
 ./run.sh init
+./run.sh authorization scripts/example_authorization.json
+./run.sh asset scripts/example_asset.json
 ./run.sh status
 ```
 
-### 6.2 Buat authorization scope
-
-Gunakan contoh local lab:
-
-```bash
-./run.sh authorization scripts/example_authorization.json
-```
-
-Contoh scope:
-
-```json
-{
-  "rules": [
-    {"value": "127.0.0.1", "kind": "ip", "included": true},
-    {"value": "localhost", "kind": "domain", "included": true}
-  ]
-}
-```
-
-**Jangan memasukkan target pihak lain tanpa izin tertulis.**
-
-### 6.3 Tambahkan asset
-
-```bash
-./run.sh asset scripts/example_asset.json
-```
-
-Asset akan mendapat flag `in_scope` berdasarkan authorization aktif.
-
-### 6.4 Tambahkan finding
-
-```bash
-./run.sh finding scripts/example_finding.json
-```
-
-Transisi finding:
-
-```bash
-./run.sh transition FINDING_ID open
-./run.sh transition FINDING_ID accepted
-./run.sh transition FINDING_ID remediated
-./run.sh transition FINDING_ID verified
-./run.sh transition FINDING_ID closed
-```
-
-### 6.5 Jalankan scan read-only
-
-Local lab:
+For the local example scope, use only a service you own, such as a local development server:
 
 ```bash
 ./run.sh scan http://127.0.0.1:3000 --delay 1 --timeout 8
 ```
 
-Target HTTPS yang memang diotorisasi:
+Export a report:
 
 ```bash
-./run.sh scan https://authorized.example \
-  --delay 1 \
-  --timeout 10 \
-  --max-body 512000 \
-  --no-openapi
+mkdir -p reports
+./run.sh report reports/assessment.md
 ```
-
-Parameter keselamatan:
-
-| Parameter | Fungsi |
-|---|---|
-| `--delay` | Jeda antarkoneksi |
-| `--timeout` | Batas waktu tiap request |
-| `--max-body` | Batas body response |
-| `--no-robots` | Lewati `robots.txt` |
-| `--no-sitemap` | Lewati `sitemap.xml` |
-| `--no-openapi` | Lewati dokumentasi API umum |
-| `--no-verify-tls` | Hanya gunakan pada lab yang dipahami risikonya |
-
-Target di luar scope akan ditolak sebelum request dibuat.
-
-### 6.6 Batch read-only scan
-
-Buat file target:
-
-```text
-# hanya target yang sudah diotorisasi
-http://127.0.0.1:3000
-https://authorized.example
-```
-
-Jalankan:
-
-```bash
-.venv/bin/python scripts/venom4pro_batch.py targets.txt \
-  --db ~/.local/share/venom4pro/venom4pro.db \
-  --delay 1 \
-  --timeout 8 \
-  --output reports/batch-results.json
-```
-
-Batch berjalan berurutan dan menyimpan hasil setiap target ke SQLite.
 
 ---
 
-## 7. Multi-GUI desktop
+## Live Execution Screenshots
 
-Pastikan dependency GUI terpasang:
+This repository documentation follows the screenshot integrity rule: **no fake screenshots are presented as runtime evidence**.
+
+The current execution environment is a headless sandbox without a PySide6 desktop display. Therefore, no live GUI screenshot has been added or claimed here. The repository contains visual wallpaper assets, but those are design assets, not proof that the GUI was running.
+
+To capture authentic screenshots on a Kali desktop, run:
 
 ```bash
 ./install_venom4.sh
+./run.sh tools-gui
 ```
 
-Jalankan:
+Then capture the following states with the desktop screenshot utility and save them under `docs/screenshots/`:
+
+```text
+docs/screenshots/terminal-startup.png
+docs/screenshots/tool-catalog.png
+docs/screenshots/main-dashboard.png
+docs/screenshots/scan-results.png
+docs/screenshots/report-output.png
+```
+
+Recommended captions:
+
+- **Terminal startup:** `./run.sh status` showing the local SQLite path and project counts.
+- **Tool catalog:** `./run.sh tools-gui` showing the search/filter GUI and the selected tool detail.
+- **Main dashboard:** `./run.sh gui` showing Overview, Inventory, Authorization, Findings, and Reports.
+- **Scan results:** a local authorized lab target only, with no credentials or sensitive host data visible.
+- **Report output:** generated Markdown/CSV/JSON report from the local database.
+
+Do not add screenshots containing API keys, tokens, passwords, cookies, private IP ranges, personal information, or unauthorized targets.
+
+---
+
+## Example Terminal Output
+
+The following output is from the repository's verified metadata smoke test:
+
+```text
+TOOL_CATALOG_CLI_OK 1518
+CATALOG_GUI_INTEGRATION_SMOKE_OK 1518
+STANDALONE_GUI_HEADLESS_GUARD_OK
+```
+
+The headless guard means the launcher detects a missing PySide6 dependency and tells the operator to run `./install_venom4.sh`. It is not a claim that a desktop window was rendered in the sandbox.
+
+---
+
+## GUI Preview
+
+### Main Venom4pro visual identity
+
+![Venom4pro 3D main wallpaper](assets/wallpapers/venom4pro-main.png)
+
+### Wide Tool Catalog background
+
+![Venom4pro wide wallpaper for Tool Catalog GUI](assets/wallpapers/venom4pro-wide.png)
+
+These images are included visual assets. They are not live execution screenshots.
+
+### Launch commands
+
+Main multi-GUI:
 
 ```bash
 ./run.sh gui
 ```
 
-Atau langsung:
+Standalone Tool Catalog GUI:
 
 ```bash
-.venv/bin/python scripts/venom4pro_gui.py
-```
-
-### Alur penggunaan GUI
-
-1. Buka halaman **Authorization**.
-2. Isi client, engagement, reviewer, window, emergency contact, dan scope.
-3. Klik **Save authorization**.
-4. Tambahkan asset melalui form asset.
-5. Buka **Findings** untuk mendokumentasikan hasil review.
-6. Isi severity, CVSS, summary, impact, dan remediation.
-7. Buka **Reports & Audit** untuk export.
-8. Buka **Inventory** untuk melihat tool yang tersedia di mesin lokal.
-
-GUI tidak menjalankan exploit atau remote execution. GUI adalah dashboard desktop lokal untuk pencatatan dan dokumentasi.
-
-Jika GUI gagal dibuka:
-
-```bash
-python3 -c "import PySide6; print('PySide6 OK')"
-```
-
-Jika muncul `ModuleNotFoundError`, ulangi:
-
-```bash
-./install_venom4.sh
+./run.sh tools-gui
 ```
 
 ---
 
-## 8. Maintenance SQLite
+## Usage Examples
 
-### Health dan metrics
+### Create an authorization record
 
 ```bash
+./run.sh authorization scripts/example_authorization.json
+```
+
+### Review the catalog
+
+```bash
+.venv/bin/python scripts/venom4pro_tools.py summary
+.venv/bin/python scripts/venom4pro_tools.py list --query graphql --commands
+.venv/bin/python scripts/venom4pro_tools.py check --query nmap
+```
+
+### Create a non-executing package plan
+
+```bash
+mkdir -p plans
+.venv/bin/python scripts/venom4pro_tools.py install-plan plans/network-tools.sh \
+  --category "Network discovery and DNS"
+```
+
+Review the generated file before using any installation command. The catalog tool never executes the plan automatically.
+
+### Create and transition a finding
+
+```bash
+./run.sh finding scripts/example_finding.json
+./run.sh transition FINDING_ID open
+./run.sh transition FINDING_ID accepted
+```
+
+### Backup and export
+
+```bash
+mkdir -p backups exports
+./run.sh backup backups/project.db
+./run.sh export exports/project.json
+```
+
+---
+
+## CLI Commands
+
+### Project commands
+
+```bash
+./run.sh init
+./run.sh status
 ./run.sh health
 ./run.sh metrics
 ./run.sh integrity
+./run.sh audit
+./run.sh search header
 ```
 
-### Backup
+### Authorization and findings
 
 ```bash
-./run.sh backup ./backups/project-$(date +%Y%m%d-%H%M%S).db
+./run.sh authorization FILE.json
+./run.sh asset FILE.json
+./run.sh finding FILE.json
+./run.sh transition FINDING_ID STATUS
 ```
 
-### Export project
+### Read-only assessment
 
 ```bash
-./run.sh export ./exports/project.json
+./run.sh scan TARGET [--delay SECONDS] [--timeout SECONDS]
+./run.sh scan TARGET --no-openapi
 ```
 
-### Restore dan import
+### Database and migration
 
 ```bash
-.venv/bin/python scripts/venom4pro_admin.py restore ./backups/project.db
-.venv/bin/python scripts/venom4pro_admin.py import ./exports/project.json
-```
-
-Restore membuat backup database aktif sebelum penggantian secara default.
-
-### Migration
-
-```bash
+./run.sh backup DESTINATION.db
+./run.sh export DESTINATION.json
 ./run.sh migrate status
 ./run.sh migrate apply
 ./run.sh migrate verify
 ```
 
-### Vacuum
+### Tool catalog
 
 ```bash
-.venv/bin/python scripts/venom4pro_admin.py vacuum
+.venv/bin/python scripts/venom4pro_tools.py summary
+.venv/bin/python scripts/venom4pro_tools.py list --query QUERY --commands
+.venv/bin/python scripts/venom4pro_tools.py check --category CATEGORY
+.venv/bin/python scripts/venom4pro_tools.py export OUTPUT.json
+.venv/bin/python scripts/venom4pro_tools.py install-plan OUTPUT.sh
 ```
 
 ---
 
-## 9. Reporting, search, dan audit
+## Configuration Reference
 
-Export Markdown melalui CLI:
+### Scan controls
 
-```bash
-./run.sh report reports/assessment.md
-```
+| Option | Purpose |
+|---|---|
+| `--delay` | Rate-control delay between requests |
+| `--timeout` | Maximum request time |
+| `--max-body` | Maximum response body stored/read |
+| `--no-robots` | Skip `robots.txt` |
+| `--no-sitemap` | Skip `sitemap.xml` |
+| `--no-openapi` | Skip OpenAPI/Swagger paths |
+| `--no-verify-tls` | Disable TLS verification only for a controlled lab |
 
-Format lain:
+### Catalog filters
 
-```bash
-.venv/bin/python scripts/venom4pro_admin.py report reports/assessment.csv --format csv
-.venv/bin/python scripts/venom4pro_admin.py report reports/assessment.json --format json
-```
-
-Search:
-
-```bash
-./run.sh search header
-./run.sh search localhost
-```
-
-Audit:
-
-```bash
-./run.sh audit
-```
-
-Safety journal:
-
-```bash
-.venv/bin/python scripts/venom4pro_doctor.py --json environment
-.venv/bin/python scripts/venom4pro_admin.py integrity
-```
+| Option | Purpose |
+|---|---|
+| `--query` | Search tool name, command, category, or purpose |
+| `--category` | Exact category filter |
+| `--risk safe` | Safe inspection/defensive category |
+| `--risk review` | Requires human authorization and review |
+| `--risk restricted` | Metadata only in Venom4pro |
+| `--commands` | Include safe command matrix in list output |
+| `--limit` | Bound displayed entries |
 
 ---
 
-## 10. Struktur project
+## Security and Privacy
 
-```text
-venom4.py                         # entry point CLI
-run.sh                            # launcher CLI atau GUI
-install_venom4.sh                 # installer Kali Linux
-scripts/venom4pro.py              # CLI utama
-scripts/venom4pro_gui.py          # launcher multi-GUI
-scripts/venom4pro_admin.py        # backup, restore, export, report
-scripts/venom4pro_batch.py        # batch read-only scan
-scripts/venom4pro_doctor.py       # health dan inventory lokal
-scripts/venom4pro_migrate.py      # migration utility
-bgxdesk/main.py                   # multi-panel PySide6 desktop GUI
-bgxdesk/domain/                   # model domain
-bgxdesk/services/sqlite_store.py  # repository SQLite
-bgxdesk/services/scanner.py       # scanner read-only reusable
-bgxdesk/services/policy.py        # scope dan operation policy
-bgxdesk/services/evidence.py      # evidence checksum dan attachment
-bgxdesk/services/reporting.py     # Markdown, CSV, JSON report
-bgxdesk/services/project_ops.py   # backup, restore, import, export
-bgxdesk/services/inventory.py     # local tool inventory
-bgxdesk/services/health.py        # local readiness check
-migrations/                       # migration SQL
-assets/wallpapers/                # wallpaper Venom4pro 3D
-legacy/original/                  # file lama yang dipertahankan
-tests/                            # unit dan integration tests
-```
+- Create written authorization before assessment.
+- Keep the target scope explicit and review exclusions.
+- Start with local lab or staging systems.
+- Use conservative delay, timeout, and body limits.
+- Do not place credentials in JSON, SQLite, reports, or evidence.
+- Review evidence before turning it into a finding.
+- Back up the database before restore/import operations.
+- Treat `restricted` catalog entries as metadata and governance records only.
+- Do not copy generated safe command text into an unauthorized workflow.
+- Remove sensitive screenshots before publishing the repository.
 
 ---
 
-## 11. Testing dan quality check
-
-Compile:
-
-```bash
-python3 -m compileall -q venom4.py scripts bgxdesk tests
-```
-
-Test suite:
-
-```bash
-pytest -q
-```
-
-Diff check:
-
-```bash
-git diff --check
-```
-
-Total code Python aktif dipertahankan sebagai logika modular bermakna, bukan duplikasi ribuan baris dalam satu file.
-
----
-
-## 12. Troubleshooting cepat
+## Troubleshooting
 
 ### `Environment belum ada`
 
@@ -476,170 +519,134 @@ Total code Python aktif dipertahankan sebagai logika modular bermakna, bukan dup
 ./install_venom4.sh
 ```
 
-### `Target is outside active authorization scope`
+### `PySide6 belum terpasang`
 
-Periksa authorization:
+```bash
+./install_venom4.sh
+python3 -c "import PySide6; print('PySide6 OK')"
+```
+
+### GUI does not open over SSH
+
+A desktop session or X11/Wayland forwarding is required. Use CLI mode on a headless host:
+
+```bash
+./run.sh status
+./run.sh health
+./run.sh integrity
+```
+
+### Target rejected by scope policy
 
 ```bash
 ./run.sh status
 ./run.sh authorization scripts/example_authorization.json
 ```
 
-Pastikan hostname, IP, wildcard, CIDR, port, atau URL sesuai target.
+Check hostname, IP, wildcard, CIDR, port, and URL rules.
 
-### GUI tidak tampil melalui SSH
-
-GUI memerlukan desktop session atau X11/Wayland forwarding. Untuk server/headless Kali, gunakan CLI:
-
-```bash
-./run.sh status
-./run.sh health
-./run.sh scan http://127.0.0.1:3000
-```
-
-### Database rusak atau ragu
+### Database check
 
 ```bash
 ./run.sh integrity
-.venv/bin/python scripts/venom4pro_admin.py backup ./backups/recovery.db
+.venv/bin/python scripts/venom4pro_admin.py backup backups/recovery.db
 ```
 
-### Periksa tool lokal
+### Tool catalog package availability
 
 ```bash
-.venv/bin/python scripts/venom4pro_doctor.py --json tools
+.venv/bin/python scripts/venom4pro_tools.py check --query TOOL_NAME
+apt-cache policy PACKAGE_NAME
 ```
+
+Catalog membership does not guarantee package availability on every Kali release or architecture.
 
 ---
 
-## 13. Prinsip penggunaan
+## Testing and Verification
 
-- Hanya gunakan pada sistem yang Anda miliki atau punya authorization tertulis.
-- Simpan authorization dan scope sebelum assessment.
-- Mulai dari local lab atau staging.
-- Gunakan delay dan timeout konservatif.
-- Review evidence sebelum membuat finding.
-- Jangan menyimpan credential di JSON, SQLite, report, atau evidence.
-- Backup database sebelum restore/import besar.
-- Gunakan GUI untuk dokumentasi dan CLI untuk operasi reproducible.
-
-**Venom4pro adalah alat dokumentasi dan pemeriksaan defensif yang lokal, terukur, dan dapat diaudit.**
-
-
-## 14. Katalog 1.500+ tool dan command terpadu
-
-Katalog lokal saat ini berisi **1.518 entry** lintas 21 kategori:
-
-- OSINT dan reconnaissance.
-- DNS dan network discovery.
-- Web dan HTTP assessment.
-- API dan application testing.
-- Vulnerability assessment.
-- Static analysis dan code security.
-- Container dan DevSecOps.
-- Authentication auditing.
-- Wireless, Bluetooth, RFID, NFC, dan SDR.
-- Hardware dan IoT.
-- Forensics dan incident response.
-- Malware analysis dan reverse engineering.
-- Android dan iOS.
-- Windows dan Active Directory.
-- Traffic analysis dan proxy.
-- Fuzzing dan protocol testing.
-- Cryptography, steganography, dan privacy.
-- Reporting, case management, dan governance.
-- System administration dan defensive utilities.
-- CTF dan training labs.
-
-Ringkasan katalog:
+Compile all Python modules:
 
 ```bash
-.venv/bin/python scripts/venom4pro_tools.py summary
+python3 -m compileall -q venom4.py scripts bgxdesk tests
 ```
 
-Cari tool dan tampilkan safe command matrix:
+Run tests after dependencies are installed:
 
 ```bash
-.venv/bin/python scripts/venom4pro_tools.py list --query graphql --commands
-.venv/bin/python scripts/venom4pro_tools.py list --category "Web and HTTP assessment" --limit 100
-.venv/bin/python scripts/venom4pro_tools.py list --risk safe
+pytest -q
 ```
 
-Periksa executable yang tersedia di mesin tanpa menjalankan tool terhadap target:
+Check formatting and whitespace:
 
 ```bash
-.venv/bin/python scripts/venom4pro_tools.py check --query nmap
-.venv/bin/python scripts/venom4pro_tools.py check --category "Static analysis and code security"
+git diff --check
 ```
 
-Export katalog lengkap:
+Verified repository checks include catalog count, parser regression, scope policy, SQLite lifecycle, health service, evidence checksum, migration verification, and headless GUI dependency handling.
 
-```bash
-.venv/bin/python scripts/venom4pro_tools.py export exports/security-tools.json
-```
+---
 
-Buat rencana paket APT yang **tidak dieksekusi otomatis**:
+## Roadmap
 
-```bash
-.venv/bin/python scripts/venom4pro_tools.py install-plan plans/apt-tools.sh --category "Network discovery and DNS"
-```
+- Add authentic desktop screenshots captured by repository maintainers.
+- Add an optional SQLite-backed desktop view that mirrors the CLI database directly.
+- Add signed catalog snapshots and package provenance metadata.
+- Add configurable organization policy profiles.
+- Add report templates for internal security review workflows.
+- Keep all automation local, scope-enforced, and read-only by default.
 
-Setiap entry menyediakan command inspection berikut:
+---
 
-```text
-command -v TOOL
-TOOL --version
-TOOL --help
-apt-cache policy PACKAGE
-```
+## Contributing
 
-Katalog tidak menjamin semua tool tersedia pada release, arsitektur, atau repository Kali tertentu. Gunakan `apt-cache policy`, baca dokumentasi upstream, dan review package sebelum instalasi.
+1. Fork the repository.
+2. Create a focused branch.
+3. Keep changes modular and testable.
+4. Do not add credentials, private targets, or sensitive screenshots.
+5. Do not add weaponized automation or unauthorized scanning workflows.
+6. Run compile, tests, and `git diff --check`.
+7. Open a pull request with a clear description and verification output.
 
-Katalog menggunakan pengelompokan resmi metapackage Kali sebagai referensi umum, lalu menambahkan tool ecosystem yang lazim dipakai untuk code security, cloud, container, forensics, mobile, dan defensive operations. Referensi resmi: [Kali Tools](https://www.kali.org/tools/), [All Kali Tools](https://www.kali.org/tools/all-tools/), dan [Kali Linux Metapackages](https://www.kali.org/docs/general-use/metapackages/).
+For catalog additions, include:
 
-## 15. Batas command berisiko
+- canonical tool name;
+- category;
+- package or installation family;
+- safe presence/version/help probe;
+- source or upstream documentation;
+- risk classification;
+- reason the entry is useful for authorized defensive work.
 
-Katalog mencatat tool yang memiliki fungsi ofensif agar inventory dan governance lengkap, tetapi Venom4pro hanya menyediakan command inspection dan package planning. Tidak ada command terpadu untuk brute force, credential theft, exploit delivery, payload generation, persistence, destructive action, atau remote execution.
+---
 
-Untuk tool dengan risk `restricted`, operator harus mengikuti authorization tertulis, rules of engagement, lab/staging isolation, dan prosedur review organisasi sebelum menjalankannya secara manual.
+## License
 
+No `LICENSE` file was present in the inspected repository at the time this README was written. Add an explicit license before distributing the project publicly.
 
-## 16. GUI Tool Catalog mandiri
+Until a license is added, treat the repository as **all rights reserved by its maintainers**, subject to the hosting platform's terms.
 
-Selain multi-GUI utama, tersedia GUI khusus untuk katalog tool:
+---
 
-```bash
-./run.sh tools-gui
-```
+## Disclaimer
 
-Atau langsung:
+Venom4pro is provided for authorized security assessment, documentation, learning, and defensive research. The operator is responsible for authorization, scope, local law, rules of engagement, data handling, and every command executed outside this application.
 
-```bash
-.venv/bin/python scripts/venom4pro_tools_gui.py
-```
+The catalog is a curated reference, not a guarantee that a tool is installed, safe for every environment, or appropriate for every engagement. Always read upstream documentation and test in an isolated lab first.
 
-GUI ini menggunakan wallpaper:
+---
 
-```text
-assets/wallpapers/venom4pro-wide.png
-```
+## Author and Contact
 
-Fitur GUI mandiri:
+- Project: [BGXTEAMID/venom4pro](https://github.com/BGXTEAMID/venom4pro)
+- Issues and contributions: [GitHub Issues](https://github.com/BGXTEAMID/venom4pro/issues)
+- Maintainer namespace: **BGXTEAM**
 
-- pencarian live berdasarkan nama, command, kategori, atau purpose;
-- filter 21 kategori;
-- filter risk `safe`, `review`, atau `restricted`;
-- tabel 1.518 entry;
-- detail package, command family, dan purpose;
-- safe command matrix;
-- copy command inspection ke clipboard;
-- export hasil filter ke JSON;
-- background wallpaper Venom4pro 3D;
-- tidak menjalankan executable tool dan tidak mengirim traffic.
+---
 
-Mode ini cocok untuk browsing dan memilih tool. Gunakan CLI untuk inventory/headless automation:
+## References
 
-```bash
-.venv/bin/python scripts/venom4pro_tools.py summary
-.venv/bin/python scripts/venom4pro_tools.py check --query nmap
-```
+- [1]: https://www.kali.org/tools/ "Kali Linux Tools"
+- [2]: https://www.kali.org/tools/all-tools/ "Kali Linux All Tools"
+- [3]: https://www.kali.org/docs/general-use/metapackages/ "Kali Linux Metapackages"
+- [4]: https://docs.github.com/en/get-started/writing-on-github "GitHub writing and Markdown documentation"
