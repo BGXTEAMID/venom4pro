@@ -73,7 +73,7 @@ class MainWindow(QMainWindow):
             button = QPushButton(label); button.setObjectName("Nav"); button.clicked.connect(lambda _=False, i=index: self.navigate(i)); side.addWidget(button)
             self.stack.addWidget(builder())
         side.addStretch(); status = QLabel("● LOCAL MODE\nOffline JSON store\nNo remote execution"); status.setObjectName("Muted"); side.addWidget(status)
-        outer.addWidget(side)
+        outer.addWidget(sidebar)
         content = QWidget(); content.setObjectName("Content"); layout = QVBoxLayout(content); layout.setContentsMargins(25, 20, 25, 20)
         top = QHBoxLayout(); self.page_title = QLabel("Security Overview"); self.page_title.setStyleSheet("font-size:24px;font-weight:800"); top.addWidget(self.page_title); top.addStretch(); self.clock = QLabel(); self.clock.setObjectName("Muted"); top.addWidget(self.clock); layout.addLayout(top); layout.addWidget(self.stack, 1); outer.addWidget(content, 1)
         timer = QTimer(self); timer.timeout.connect(lambda: self.clock.setText(datetime.now().strftime("%a %d %b %Y  •  %H:%M:%S"))); timer.start(1000)
