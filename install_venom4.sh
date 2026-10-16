@@ -9,6 +9,6 @@ python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-chmod +x venom4.py run.sh install_venom4.sh scripts/venom4pro.py scripts/venom4pro_gui.py
+chmod +x venom4.py run.sh install_venom4.sh scripts/*.py
 ./run.sh init
 printf '\nSetup selesai. Contoh: ./run.sh status\n'

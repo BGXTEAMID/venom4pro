@@ -16,6 +16,7 @@ from PySide6.QtWidgets import (
 from bgxdesk.domain.models import Asset, AssetType, AuthorizationRecord, Finding, FindingStatus, ScopeRule, Severity
 from bgxdesk.services.assessment import AuthorizationService, FindingsService, InventoryService, ReportService
 from bgxdesk.services.storage import JsonStore, Repository
+from bgxdesk.services.tool_catalog import categories as tool_categories, count as tool_count, find as find_tools
 
 APP_NAME = "VENOM4PRO — MULTI-GUI SECURITY DESK"
 ASSET_DIR = Path(__file__).resolve().parents[1] / "assets" / "wallpapers"
@@ -67,7 +68,7 @@ class MainWindow(QMainWindow):
         sidebar = QFrame(); sidebar.setObjectName("Sidebar"); sidebar.setFixedWidth(245); side = QVBoxLayout(sidebar); side.setContentsMargins(16, 24, 16, 18)
         brand = QLabel("◈ VENOM4PRO"); brand.setObjectName("Brand"); side.addWidget(brand)
         subtitle = QLabel("MULTI-GUI / LOCAL / SQLITE CLI COMPANION"); subtitle.setObjectName("Muted"); side.addWidget(subtitle); side.addSpacing(18)
-        self.stack = QStackedWidget(); pages = [("⌂  Overview", self.build_overview), ("▦  Inventory", self.build_inventory), ("◎  Authorization", self.build_authorization), ("⚠  Findings", self.build_findings), ("▤  Reports & Audit", self.build_reports)]
+        self.stack = QStackedWidget(); pages = [("⌂  Overview", self.build_overview), ("▦  Inventory", self.build_inventory), ("◈  Tool Catalog", self.build_tool_catalog), ("◎  Authorization", self.build_authorization), ("⚠  Findings", self.build_findings), ("▤  Reports & Audit", self.build_reports)]
         for index, (label, builder) in enumerate(pages):
             button = QPushButton(label); button.setObjectName("Nav"); button.clicked.connect(lambda _=False, i=index: self.navigate(i)); side.addWidget(button)
             self.stack.addWidget(builder())
@@ -89,7 +90,7 @@ class MainWindow(QMainWindow):
         hero = QFrame(); hero.setObjectName("Hero"); hero_layout = QHBoxLayout(hero); hero_layout.setContentsMargins(22, 20, 22, 20)
         text = QVBoxLayout(); title = QLabel("Authorized security work, organized."); title.setStyleSheet("font-size:23px;font-weight:850"); text.addWidget(title)
         desc = QLabel("Offline-first workspace for authorization, asset inventory, findings, evidence, audit events, and reporting."); desc.setObjectName("Muted"); desc.setWordWrap(True); text.addWidget(desc)
-        button = QPushButton("Configure authorization →"); button.setObjectName("Primary"); button.clicked.connect(lambda: self.navigate(2)); text.addWidget(button, 0, Qt.AlignLeft); hero_layout.addLayout(text, 1)
+        button = QPushButton("Configure authorization →"); button.setObjectName("Primary"); button.clicked.connect(lambda: self.navigate(3)); text.addWidget(button, 0, Qt.AlignLeft); hero_layout.addLayout(text, 1)
         emblem = QLabel("◈"); emblem.setStyleSheet("font-size:78px;color:#ff3048;font-weight:900"); hero_layout.addWidget(emblem); layout.addWidget(hero)
         self.metrics = QHBoxLayout(); layout.addLayout(self.metrics)
         lower = QHBoxLayout(); panel, panel_layout = self.panel("Operational guardrails")
@@ -102,6 +103,19 @@ class MainWindow(QMainWindow):
     def build_inventory(self) -> QWidget:
         page = QWidget(); layout = QVBoxLayout(page); controls = QHBoxLayout(); self.inventory_search = QLineEdit(); self.inventory_search.setPlaceholderText("Search tools, category, purpose…"); self.inventory_search.textChanged.connect(self.refresh_inventory_table); self.inventory_policy = QComboBox(); self.inventory_policy.addItems(["All policies", "safe", "review", "restricted"]); self.inventory_policy.currentTextChanged.connect(self.refresh_inventory_table); refresh = QPushButton("Refresh local detection"); refresh.clicked.connect(self.run_inventory); controls.addWidget(self.inventory_search, 1); controls.addWidget(self.inventory_policy); controls.addWidget(refresh); layout.addLayout(controls)
         self.inventory_table = QTableWidget(0, 6); self.inventory_table.setHorizontalHeaderLabels(["Tool", "Category", "Executable", "Purpose", "Policy", "Status"]); self.inventory_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch); self.inventory_table.setSelectionBehavior(QTableWidget.SelectRows); layout.addWidget(self.inventory_table, 1); return page
+
+    def build_tool_catalog(self) -> QWidget:
+        page = QWidget(); layout = QVBoxLayout(page); controls = QHBoxLayout(); self.catalog_search = QLineEdit(); self.catalog_search.setPlaceholderText(f"Search {tool_count()} catalog entries…"); self.catalog_search.textChanged.connect(self.refresh_catalog_table); self.catalog_category = QComboBox(); self.catalog_category.addItem("All categories"); self.catalog_category.addItems(tool_categories()); self.catalog_category.currentTextChanged.connect(self.refresh_catalog_table); self.catalog_risk = QComboBox(); self.catalog_risk.addItems(["All risk levels", "safe", "review", "restricted"]); self.catalog_risk.currentTextChanged.connect(self.refresh_catalog_table); controls.addWidget(self.catalog_search, 1); controls.addWidget(self.catalog_category); controls.addWidget(self.catalog_risk); layout.addLayout(controls)
+        info = QLabel("Catalog commands are inspection-only: command -v, --version, --help, and apt-cache policy. Tool execution remains under operator authorization."); info.setObjectName("Muted"); info.setWordWrap(True); layout.addWidget(info)
+        self.catalog_table = QTableWidget(0, 7); self.catalog_table.setHorizontalHeaderLabels(["Tool", "Category", "Command", "Family", "Risk", "Package", "Purpose"]); self.catalog_table.horizontalHeader().setSectionResizeMode(6, QHeaderView.Stretch); self.catalog_table.setSelectionBehavior(QTableWidget.SelectRows); layout.addWidget(self.catalog_table, 1); self.refresh_catalog_table(); return page
+
+    def refresh_catalog_table(self) -> None:
+        if not hasattr(self, "catalog_table"): return
+        query = self.catalog_search.text() if hasattr(self, "catalog_search") else ""; category = self.catalog_category.currentText() if hasattr(self, "catalog_category") else "All categories"; risk = self.catalog_risk.currentText() if hasattr(self, "catalog_risk") else "All risk levels"
+        entries = find_tools(query, None if category == "All categories" else category, None if risk == "All risk levels" else risk); self.catalog_table.setRowCount(0)
+        for entry in entries:
+            row = self.catalog_table.rowCount(); self.catalog_table.insertRow(row); values = (entry.name, entry.category, entry.command, entry.family, entry.risk.upper(), entry.package, entry.purpose)
+            for column, value in enumerate(values): self.catalog_table.setItem(row, column, QTableWidgetItem(str(value)))
 
     def build_authorization(self) -> QWidget:
         page = QWidget(); layout = QVBoxLayout(page); splitter = QSplitter(Qt.Vertical); form_panel, form_layout = self.panel("Authorization record", "Create an explicit engagement record before adding assets or documenting findings."); form = QFormLayout(); self.auth_client = QLineEdit(); self.auth_engagement = QLineEdit(); self.auth_reviewer = QLineEdit(); self.auth_start = QLineEdit(); self.auth_start.setPlaceholderText("2026-01-01T09:00:00+07:00"); self.auth_end = QLineEdit(); self.auth_end.setPlaceholderText("2026-01-31T17:00:00+07:00"); self.auth_contact = QLineEdit(); self.auth_scope = QLineEdit(); self.auth_scope.setPlaceholderText("example.com, https://staging.example.com"); self.auth_methods = QLineEdit("manual review, authenticated testing"); form.addRow("Client", self.auth_client); form.addRow("Engagement", self.auth_engagement); form.addRow("Reviewer", self.auth_reviewer); form.addRow("Start", self.auth_start); form.addRow("End", self.auth_end); form.addRow("Emergency contact", self.auth_contact); form.addRow("Included scope", self.auth_scope); form.addRow("Approved methods", self.auth_methods); form_layout.addLayout(form); save = QPushButton("Save authorization"); save.setObjectName("Primary"); save.clicked.connect(self.save_authorization); form_layout.addWidget(save); splitter.addWidget(form_panel)
@@ -118,10 +132,10 @@ class MainWindow(QMainWindow):
         panel_layout.addLayout(buttons); self.audit_table = QTableWidget(0, 5); self.audit_table.setHorizontalHeaderLabels(["Timestamp", "Action", "Entity", "ID", "Details"]); self.audit_table.horizontalHeader().setSectionResizeMode(4, QHeaderView.Stretch); panel_layout.addWidget(self.audit_table); layout.addWidget(panel); return page
 
     def navigate(self, index: int) -> None:
-        self.stack.setCurrentIndex(index); self.page_title.setText(["Security Overview", "Tool Inventory", "Authorization", "Findings", "Reports & Audit"][index]); self.refresh_all()
+        self.stack.setCurrentIndex(index); self.page_title.setText(["Security Overview", "Tool Inventory", "Tool Catalog", "Authorization", "Findings", "Reports & Audit"][index]); self.refresh_all()
 
     def refresh_all(self) -> None:
-        self.refresh_metrics(); self.refresh_inventory_table(); self.refresh_authorization(); self.refresh_findings(); self.refresh_audit()
+        self.refresh_metrics(); self.refresh_inventory_table(); self.refresh_catalog_table(); self.refresh_authorization(); self.refresh_findings(); self.refresh_audit()
 
     def refresh_metrics(self) -> None:
         if not hasattr(self, "metrics"): return

@@ -524,3 +524,81 @@ GUI memerlukan desktop session atau X11/Wayland forwarding. Untuk server/headles
 - Gunakan GUI untuk dokumentasi dan CLI untuk operasi reproducible.
 
 **Venom4pro adalah alat dokumentasi dan pemeriksaan defensif yang lokal, terukur, dan dapat diaudit.**
+
+
+## 14. Katalog 1.500+ tool dan command terpadu
+
+Katalog lokal saat ini berisi **1.518 entry** lintas 21 kategori:
+
+- OSINT dan reconnaissance.
+- DNS dan network discovery.
+- Web dan HTTP assessment.
+- API dan application testing.
+- Vulnerability assessment.
+- Static analysis dan code security.
+- Container dan DevSecOps.
+- Authentication auditing.
+- Wireless, Bluetooth, RFID, NFC, dan SDR.
+- Hardware dan IoT.
+- Forensics dan incident response.
+- Malware analysis dan reverse engineering.
+- Android dan iOS.
+- Windows dan Active Directory.
+- Traffic analysis dan proxy.
+- Fuzzing dan protocol testing.
+- Cryptography, steganography, dan privacy.
+- Reporting, case management, dan governance.
+- System administration dan defensive utilities.
+- CTF dan training labs.
+
+Ringkasan katalog:
+
+```bash
+.venv/bin/python scripts/venom4pro_tools.py summary
+```
+
+Cari tool dan tampilkan safe command matrix:
+
+```bash
+.venv/bin/python scripts/venom4pro_tools.py list --query graphql --commands
+.venv/bin/python scripts/venom4pro_tools.py list --category "Web and HTTP assessment" --limit 100
+.venv/bin/python scripts/venom4pro_tools.py list --risk safe
+```
+
+Periksa executable yang tersedia di mesin tanpa menjalankan tool terhadap target:
+
+```bash
+.venv/bin/python scripts/venom4pro_tools.py check --query nmap
+.venv/bin/python scripts/venom4pro_tools.py check --category "Static analysis and code security"
+```
+
+Export katalog lengkap:
+
+```bash
+.venv/bin/python scripts/venom4pro_tools.py export exports/security-tools.json
+```
+
+Buat rencana paket APT yang **tidak dieksekusi otomatis**:
+
+```bash
+.venv/bin/python scripts/venom4pro_tools.py install-plan plans/apt-tools.sh --category "Network discovery and DNS"
+```
+
+Setiap entry menyediakan command inspection berikut:
+
+```text
+command -v TOOL
+TOOL --version
+TOOL --help
+apt-cache policy PACKAGE
+```
+
+Katalog tidak menjamin semua tool tersedia pada release, arsitektur, atau repository Kali tertentu. Gunakan `apt-cache policy`, baca dokumentasi upstream, dan review package sebelum instalasi.
+
+Katalog menggunakan pengelompokan resmi metapackage Kali sebagai referensi umum, lalu menambahkan tool ecosystem yang lazim dipakai untuk code security, cloud, container, forensics, mobile, dan defensive operations. Referensi resmi: [Kali Tools](https://www.kali.org/tools/), [All Kali Tools](https://www.kali.org/tools/all-tools/), dan [Kali Linux Metapackages](https://www.kali.org/docs/general-use/metapackages/).
+
+## 15. Batas command berisiko
+
+Katalog mencatat tool yang memiliki fungsi ofensif agar inventory dan governance lengkap, tetapi Venom4pro hanya menyediakan command inspection dan package planning. Tidak ada command terpadu untuk brute force, credential theft, exploit delivery, payload generation, persistence, destructive action, atau remote execution.
+
+Untuk tool dengan risk `restricted`, operator harus mengikuti authorization tertulis, rules of engagement, lab/staging isolation, dan prosedur review organisasi sebelum menjalankannya secara manual.
