@@ -75,7 +75,7 @@ class ToolCatalogWindow(QMainWindow):
         side.addStretch()
         disclaimer = QLabel("No command execution\nNo target traffic\nNo exploit payloads")
         disclaimer.setObjectName("Muted"); side.addWidget(disclaimer)
-        shell.addWidget(side)
+        shell.addWidget(sidebar)
 
         content = QWidget(); layout = QVBoxLayout(content); layout.setContentsMargins(25, 20, 25, 20); layout.setSpacing(12)
         header = QHBoxLayout(); title = QLabel("Cybersecurity Tool Catalog"); title.setObjectName("Title"); header.addWidget(title); header.addStretch(); self.status_label = QLabel("Ready"); self.status_label.setObjectName("Muted"); header.addWidget(self.status_label); layout.addLayout(header)
